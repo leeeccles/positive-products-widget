@@ -82,7 +82,7 @@
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding: 16px var(--snap-offset, 0px);
+      padding: 16px 0;
       cursor: grab;
       user-select: none;
     }
@@ -99,7 +99,7 @@
       border-left: 3px solid #ff5a36;
       border-radius: 16px;
       padding: 24px 20px 20px;
-      scroll-snap-align: center;
+      scroll-snap-align: start;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -286,13 +286,6 @@
   function getCardWidth() { return cards[0] ? cards[0].offsetWidth : 300; }
   function getGap() { return parseInt(getComputedStyle(track).gap || '16', 10); }
 
-  function calcSnapOffset() {
-    const trackW = track.parentElement.offsetWidth;
-    const cardW  = getCardWidth();
-    const offset = Math.max(0, (trackW - cardW) / 2);
-    track.style.setProperty('--snap-offset', offset + 'px');
-  }
-
   function updateDots() {
     dotEls.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
   }
@@ -300,20 +293,17 @@
   function scrollToCard(idx, smooth) {
     idx = Math.max(0, Math.min(TOTAL - 1, idx));
     activeIdx = idx;
-    calcSnapOffset();
     const target = (getCardWidth() + getGap()) * idx;
     track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'instant' });
     updateDots();
   }
 
   function indexFromScroll() {
-    const cardW    = getCardWidth();
-    const gap      = getGap();
-    const offset   = parseFloat(getComputedStyle(track).paddingLeft) || 0;
-    const viewMid  = track.scrollLeft + track.parentElement.offsetWidth / 2;
+    const cardW = getCardWidth();
+    const gap   = getGap();
     let best = 0, bestDist = Infinity;
     for (let i = 0; i < TOTAL; i++) {
-      const dist = Math.abs(offset + (cardW + gap) * i + cardW / 2 - viewMid);
+      const dist = Math.abs((cardW + gap) * i - track.scrollLeft);
       if (dist < bestDist) { bestDist = dist; best = i; }
     }
     return best;
@@ -356,7 +346,6 @@
     else if (trackW >= 500) cardW = Math.round((trackW - gap) / 2);
     else                    cardW = Math.round(trackW * 0.82);
     cards.forEach(c => c.style.width = cardW + 'px');
-    calcSnapOffset();
   }
 
   function init() { setCardWidths(); scrollToCard(0, false); }
