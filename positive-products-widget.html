@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<!--
+  IMAGE MAPPING (all files found in root folder, no /images subfolder):
+  - 69496537ccced4aa7bc841a8_sarbacane-logo-orange.svg  → Positive Sarbacane
+  - 6942afae20e08eda4d427401_user-logo-orange.svg       → Positive User
+  - 6942afae20e08eda4d427418_surfer-logo-orange.svg     → Positive Surfer
+  - 6942afae92a19e55ce324951_signitic-logo-orange.svg   → Positive Signitic
+  - 69496537dcd2eb8e4f4a1d69_rapidmail-logo-orange.svg  → Positive rapidmail
+  - 694965375e774970507657cb_nocrm-logo-orange.svg      → Positive noCRM
+
+  NOTE: All images are in the same directory as this HTML file (no /images subfolder).
+  Image src paths are relative: ./[filename]
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Positive Products</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    window.addEventListener('load', () => {
+      window.parent.postMessage({ height: document.body.scrollHeight }, '*');
+    });
+  </script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: auto;
+      overflow-x: hidden;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      color: #ffffff;
+    }
+
+    /* ── Outer wrapper ─────────────────────────────── */
+    .widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: auto;
+      padding: 24px 0 20px;
+      background: transparent;
+    }
+
+    /* ── Carousel row (arrows + track) ─────────────── */
+    .carousel-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 0;
+      position: relative;
+    }
+
+    /* ── Arrow buttons ─────────────────────────────── */
+    .arrow {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      border-radius: 50%;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      z-index: 10;
+      position: relative;
+    }
+
+    .arrow:hover {
+      background: rgba(255, 90, 54, 0.12);
+      border-color: #ff5a36;
+    }
+
+    .arrow svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .arrow-prev { margin-left: 16px; margin-right: 8px; }
+    .arrow-next { margin-right: 16px; margin-left: 8px; }
+
+    /* ── Scroll track ──────────────────────────────── */
+    .track-wrapper {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 20px 0 20px;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .track::-webkit-scrollbar { display: none; }
+    .track.dragging { cursor: grabbing; }
+
+    /* Left/right padding equal to half the track width minus half the card width,
+       so the first/last card can snap to centre. We use CSS custom props updated by JS. */
+    .track {
+      padding-left: var(--snap-offset, 0px);
+      padding-right: var(--snap-offset, 0px);
+    }
+
+    /* ── Cards ─────────────────────────────────────── */
+    .card {
+      flex-shrink: 0;
+      /* width set via CSS custom prop updated by JS / media queries */
+      width: var(--card-w, 300px);
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-left: 3px solid #ff5a36;
+      border-radius: 16px;
+      padding: 28px 24px 24px;
+      scroll-snap-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    /* Dimming of non-active cards while hovering the track */
+    .track:hover .card:not(:hover) {
+      transform: scale(0.96);
+      opacity: 0.45;
+    }
+
+    .track:hover .card:hover {
+      transform: scale(1.02);
+      opacity: 1;
+      box-shadow: 0 0 28px rgba(255, 90, 54, 0.25);
+    }
+
+    /* ── Card internals ─────────────────────────────── */
+    .card-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .card-tagline {
+      font-size: 14px;
+      font-weight: 400;
+      color: #999999;
+      line-height: 1.4;
+      margin-top: -8px;
+    }
+
+    .card-img-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-height: 80px;
+    }
+
+    .card-img-wrap img {
+      max-height: 110px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-btn {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1px solid #ffffff44;
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .card-btn:hover {
+      border-color: #ff5a36;
+      background: rgba(255, 90, 54, 0.08);
+      color: #ff5a36;
+    }
+
+    /* ── Dot indicators ─────────────────────────────── */
+    .dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .dot.active {
+      background: #ff5a36;
+      border-color: #ff5a36;
+      transform: scale(1.25);
+    }
+
+    /* ── Responsive card widths ─────────────────────── */
+
+    /* Desktop ≥ 900px: 3 cards visible, centre prominent */
+    @media (min-width: 900px) {
+      .card { width: var(--card-w, 280px); }
+    }
+
+    /* Tablet 500–899px: 2 cards */
+    @media (min-width: 500px) and (max-width: 899px) {
+      .card { width: var(--card-w, 260px); }
+    }
+
+    /* Mobile < 500px: 1 card + peek */
+    @media (max-width: 499px) {
+      .card { width: var(--card-w, 240px); }
+      .arrow { width: 36px; height: 36px; }
+      .arrow-prev { margin-left: 8px; margin-right: 4px; }
+      .arrow-next { margin-right: 8px; margin-left: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="widget">
+  <div class="carousel-row">
+    <button class="arrow arrow-prev" id="prevBtn" aria-label="Previous card">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+        <path d="M7.715 13.197L8.754 12.104 5.642 8.798H13.2V7.202H5.642l3.112-3.302L7.715 2.803 2.823 8l4.892 5.197Z" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <div class="track-wrapper">
+      <div class="track" id="track">
+
+        <!-- Card 1: Sarbacane -->
+        <div class="card" data-index="0">
+          <div class="card-name">Positive Sarbacane</div>
+          <div class="card-tagline">Turning communication into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./69496537ccced4aa7bc841a8_sarbacane-logo-orange.svg" alt="Sarbacane logo">
+          </div>
+          <a class="card-btn" href="https://www.sarbacane.com/" target="_blank" rel="noopener noreferrer">
+            Discover Positive Sarbacane →
+          </a>
+        </div>
+
+        <!-- Card 2: User -->
+        <div class="card" data-index="1">
+          <div class="card-name">Positive User</div>
+          <div class="card-tagline">Turning data into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./6942afae20e08eda4d427401_user-logo-orange.svg" alt="User logo">
+          </div>
+          <a class="card-btn" href="https://user.com/" target="_blank" rel="noopener noreferrer">
+            Discover Positive User →
+          </a>
+        </div>
+
+        <!-- Card 3: Surfer -->
+        <div class="card" data-index="2">
+          <div class="card-name">Positive Surfer</div>
+          <div class="card-tagline">Turning content into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./6942afae20e08eda4d427418_surfer-logo-orange.svg" alt="Surfer logo">
+          </div>
+          <a class="card-btn" href="https://surferseo.com/" target="_blank" rel="noopener noreferrer">
+            Discover Positive Surfer →
+          </a>
+        </div>
+
+        <!-- Card 4: Signitic -->
+        <div class="card" data-index="3">
+          <div class="card-name">Positive Signitic</div>
+          <div class="card-tagline">Turning employee email into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./6942afae92a19e55ce324951_signitic-logo-orange.svg" alt="Signitic logo">
+          </div>
+          <a class="card-btn" href="https://www.signitic.com/en" target="_blank" rel="noopener noreferrer">
+            Discover Positive Signitic →
+          </a>
+        </div>
+
+        <!-- Card 5: rapidmail -->
+        <div class="card" data-index="4">
+          <div class="card-name">Positive rapidmail</div>
+          <div class="card-tagline">Turning newsletter into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./69496537dcd2eb8e4f4a1d69_rapidmail-logo-orange.svg" alt="rapidmail logo">
+          </div>
+          <a class="card-btn" href="https://www.rapidmail.com/" target="_blank" rel="noopener noreferrer">
+            Discover Positive rapidmail →
+          </a>
+        </div>
+
+        <!-- Card 6: noCRM -->
+        <div class="card" data-index="5">
+          <div class="card-name">Positive noCRM</div>
+          <div class="card-tagline">Turning sales actions into connection.</div>
+          <div class="card-img-wrap">
+            <img src="./694965375e774970507657cb_nocrm-logo-orange.svg" alt="noCRM logo">
+          </div>
+          <a class="card-btn" href="https://www.nocrm.io/" target="_blank" rel="noopener noreferrer">
+            Discover Positive noCRM →
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="arrow arrow-next" id="nextBtn" aria-label="Next card">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
+        <path d="M8.285 13.197 7.246 12.104l3.112-3.306H2.798V7.202h7.56L7.246 3.901 8.285 2.803 13.176 8l-4.891 5.197Z" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="dots" id="dots">
+    <div class="dot active" data-dot="0"></div>
+    <div class="dot" data-dot="1"></div>
+    <div class="dot" data-dot="2"></div>
+    <div class="dot" data-dot="3"></div>
+    <div class="dot" data-dot="4"></div>
+    <div class="dot" data-dot="5"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const track      = document.getElementById('track');
+  const prevBtn    = document.getElementById('prevBtn');
+  const nextBtn    = document.getElementById('nextBtn');
+  const dotsEl     = document.getElementById('dots');
+  const cards      = Array.from(track.querySelectorAll('.card'));
+  const dotEls     = Array.from(dotsEl.querySelectorAll('.dot'));
+  const CARD_COUNT = cards.length;
+  let   activeIdx  = 0;
+
+  /* ── Layout calc ──────────────────────────────────── */
+  function getCardWidth() {
+    return cards[0] ? cards[0].offsetWidth : 300;
+  }
+
+  function getGap() {
+    // Read gap from computed style of track
+    const s = getComputedStyle(track);
+    return parseInt(s.gap || s.columnGap || '16', 10);
+  }
+
+  function calcSnapOffset() {
+    // The padding that centres a card in the track-wrapper
+    const trackW  = track.parentElement.offsetWidth;
+    const cardW   = getCardWidth();
+    const offset  = Math.max(0, (trackW - cardW) / 2);
+    track.style.setProperty('--snap-offset', offset + 'px');
+    return offset;
+  }
+
+  /* ── Scroll to index ──────────────────────────────── */
+  function scrollToCard(idx, smooth) {
+    idx = Math.max(0, Math.min(CARD_COUNT - 1, idx));
+    activeIdx = idx;
+
+    const cardW  = getCardWidth();
+    const gap    = getGap();
+    const offset = calcSnapOffset();
+    // Position: padding-left + (cardW + gap) * idx
+    const target = offset + (cardW + gap) * idx;
+
+    track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'instant' });
+    updateDots();
+  }
+
+  /* ── Dot state ────────────────────────────────────── */
+  function updateDots() {
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+  }
+
+  /* ── Determine active index from scroll pos ───────── */
+  function indexFromScroll() {
+    const cardW  = getCardWidth();
+    const gap    = getGap();
+    const offset = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    const scrollLeft = track.scrollLeft;
+    // Which card centre is closest to the viewport centre
+    let best = 0, bestDist = Infinity;
+    for (let i = 0; i < CARD_COUNT; i++) {
+      const cardCenter = offset + (cardW + gap) * i + cardW / 2;
+      const viewCenter = scrollLeft + track.parentElement.offsetWidth / 2;
+      const dist = Math.abs(cardCenter - viewCenter);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    }
+    return best;
+  }
+
+  /* ── Arrow buttons ────────────────────────────────── */
+  prevBtn.addEventListener('click', () => scrollToCard(activeIdx - 1, true));
+  nextBtn.addEventListener('click', () => scrollToCard(activeIdx + 1, true));
+
+  /* ── Dot clicks ───────────────────────────────────── */
+  dotEls.forEach(d => {
+    d.addEventListener('click', () => scrollToCard(+d.dataset.dot, true));
+  });
+
+  /* ── Sync dot on scroll end ───────────────────────── */
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      activeIdx = indexFromScroll();
+      updateDots();
+    }, 80);
+  }, { passive: true });
+
+  /* ── Mouse drag-to-scroll ─────────────────────────── */
+  let isDragging = false, startX = 0, startScroll = 0;
+
+  track.addEventListener('mousedown', e => {
+    // Don't initiate drag on button clicks
+    if (e.target.closest('.card-btn')) return;
+    isDragging  = true;
+    startX      = e.clientX;
+    startScroll = track.scrollLeft;
+    track.classList.add('dragging');
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    track.scrollLeft = startScroll - dx;
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('dragging');
+    // Snap to nearest after drag
+    activeIdx = indexFromScroll();
+    scrollToCard(activeIdx, true);
+  });
+
+  /* ── Touch/swipe support (native CSS snap handles it,
+       but we still sync dots & prevent link-drag issues) */
+  let touchStartX = 0;
+  track.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  track.addEventListener('touchend', () => {
+    // Let CSS snap settle, then update dot after short delay
+    setTimeout(() => {
+      activeIdx = indexFromScroll();
+      updateDots();
+    }, 150);
+  }, { passive: true });
+
+  /* ── Responsive card widths via CSS custom prop ────── */
+  function setCardWidths() {
+    const trackW  = track.parentElement.offsetWidth;
+    const gap     = 16; // matches CSS gap
+    let cardW;
+
+    if (trackW >= 900) {
+      // Show 3 cards with partial visibility
+      cardW = Math.round((trackW - gap * 2) / 3);
+    } else if (trackW >= 500) {
+      // Show 2 cards
+      cardW = Math.round((trackW - gap) / 2);
+    } else {
+      // Show 1 card + peek of next (~85% of track width)
+      cardW = Math.round(trackW * 0.82);
+    }
+
+    track.style.setProperty('--card-w', cardW + 'px');
+    cards.forEach(c => c.style.width = cardW + 'px');
+    calcSnapOffset();
+  }
+
+  /* ── Init & resize ────────────────────────────────── */
+  function init() {
+    setCardWidths();
+    scrollToCard(0, false);
+  }
+
+  const ro = new ResizeObserver(() => {
+    setCardWidths();
+    scrollToCard(activeIdx, false);
+    // Also update iframe height hint
+    window.parent.postMessage({ height: document.body.scrollHeight }, '*');
+  });
+  ro.observe(track.parentElement);
+
+  // Wait for fonts before first render
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(init);
+  } else {
+    window.addEventListener('load', init);
+  }
+
+  // Keyboard nav (when widget is focused)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  scrollToCard(activeIdx - 1, true);
+    if (e.key === 'ArrowRight') scrollToCard(activeIdx + 1, true);
+  });
+})();
+</script>
+
+</body>
+</html>
