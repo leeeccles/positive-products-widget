@@ -34,14 +34,15 @@
 
     /* ── Carousel row ── */
     .carousel-row {
-      display: flex;
-      align-items: center;
+      position: relative;
       width: 100%;
     }
 
-    /* ── Arrows ── */
+    /* ── Arrows — overlaid on the track edges ── */
     .arrow {
-      flex-shrink: 0;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       width: 40px;
       height: 40px;
       background: #111111;
@@ -64,11 +65,15 @@
 
     .arrow svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-    .arrow-prev { margin-left: 12px; margin-right: 4px; }
-    .arrow-next { margin-left: 4px;  margin-right: 12px; }
+    .arrow-prev { left: 10px; }
+    .arrow-next { right: 10px; }
 
     /* ── Track ── */
-    .track-wrapper { flex: 1; overflow: hidden; }
+    .track-wrapper {
+      width: 100%;
+      overflow: hidden;
+      padding: 0 58px; /* keep cards clear of the overlaid arrows */
+    }
 
     .track {
       display: flex;
@@ -170,8 +175,9 @@
     /* ── Responsive ── */
     @media (max-width: 499px) {
       .arrow { width: 34px; height: 34px; }
-      .arrow-prev { margin-left: 6px; margin-right: 2px; }
-      .arrow-next { margin-left: 2px; margin-right: 6px; }
+      .arrow-prev { left: 4px; }
+      .arrow-next { right: 4px; }
+      .track-wrapper { padding: 0 46px; }
     }
   </style>
 </head>
