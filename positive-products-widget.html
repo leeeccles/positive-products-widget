@@ -400,9 +400,11 @@
 
     const cardW  = getCardWidth();
     const gap    = getGap();
-    const offset = calcSnapOffset();
-    // Position: padding-left + (cardW + gap) * idx
-    const target = offset + (cardW + gap) * idx;
+    calcSnapOffset();
+    // scrollLeft = (cardW + gap) * idx centres card i.
+    // The padding-left (offset) already positions card 0 at the visual centre
+    // when scrollLeft = 0, so we must NOT add offset here.
+    const target = (cardW + gap) * idx;
 
     track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'instant' });
     updateDots();
